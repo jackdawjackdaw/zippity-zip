@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include <wchar.h>
 
 #include "zip-headers.h"
 
@@ -8,10 +9,11 @@
 int readLHeader(FILE* stream, struct localHeader *head)
 {
 	unsigned short int flags[5];
-	char *fbuffer;
-	//char fname2[128];
-	//unsigned int *fbuffer;
-	char *exbuffer;
+	//unsigned char *fbuffer;
+	wchar_t *fbuffer;
+	
+	//unsigned char *exbuffer;
+	int i;
 	
 	fread(&(head->headSig), sizeof(unsigned int), 1, stream);
 	if(head->headSig != localSig){
@@ -54,21 +56,18 @@ int readLHeader(FILE* stream, struct localHeader *head)
 	fread(&head->fnameLenN, sizeof(unsigned short int), 1, stream);
 	fread(&head->fnameLenM, sizeof(unsigned short int), 1, stream);
 	
-	fprintf(stderr, "# N: %d M: %d\n", head->fnameLenN, head->fnameLenM);
+	fprintf(stderr, "# N: %u M: %u\n", head->fnameLenN, head->fnameLenM);
 
 	// ooh this isn't working well
-	fbuffer = malloc(sizeof(unsigned int)*head->fnameLenN); // oh man alloc space for the terminating 0 also
-	exbuffer = malloc(sizeof(char)*head->fnameLenM);
-	
-	//fread(&fbuffer, sizeof(char), head->fnameLenN, stream);
-	fscanf(stream, "%s", &fbuffer);
-	
-	//fread(&(head->fname), sizeof(char), head->fnameLenN, stream);
-	//fread(&(head->extra), sizeof(char), head->fnameLenM, stream);
+	fbuffer = malloc(sizeof(char)*head->fnameLenN); // oh man alloc space for the terminating 0 also
+	//exbuffer = malloc(sizeof(char)*head->fnameLenM);
 
-	//fbuffer[head->fnameLenN-2] = '\0';
-	//fprintf(stderr, "# fname: %x\n", fbuffer);
-	fprintf(stderr, "# fname: %s\n", fbuffer);
+	// hmm
+	fread(&fbuffer, sizeof(wchar_t)*head->fnameLenN, 1, stream);
+	//fread(&exbuffer, sizeof(char), head->fnameLenM, stream);
+	//fwprintf(stderr, "# %s\n", fbuffer);
+	fprintf(stderr, "# %ls\n", fbuffer);
+	
 	
 	
 	return 1;
