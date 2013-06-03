@@ -27,19 +27,19 @@
  */
 
 typedef struct localHeader{
-	uint32_t headSig; /* 0, 0x04034b50 */
-	uint16_t minVer; /* 4 */
-	uint16_t bitFlag; /* 6 */
-	uint16_t compMethod; /* 8 */
-	uint16_t lmodT; /* 10 */
-	uint16_t lmodD; /* 12 */
-	uint32_t checkSum; /* 14, CRC-32 */
-	uint32_t compSize; /* 18 */
-	uint32_t ucompSize; /* 22 */
-	uint16_t fnameLenN; /* 26 */
-	uint16_t fnameLenM; /* 28 */
-	unsigned char* fname; /* starts offset 30, length n */
-	uint8_t * extra; /* starts offset 30+n, length m */
+  uint32_t headSig; /* 0, 0x04034b50 */
+  uint16_t minVer; /* 4 */
+  uint16_t bitFlag; /* 6 */
+  uint16_t compMethod; /* 8 */
+  uint16_t lmodT; /* 10 */
+  uint16_t lmodD; /* 12 */
+  uint32_t checkSum; /* 14, CRC-32 */
+  uint32_t compSize; /* 18 */
+  uint32_t ucompSize; /* 22 */
+  uint16_t fnameLenN; /* 26 */
+  uint16_t fnameLenM; /* 28 */
+  unsigned char* fname; /* starts offset 30, length n */
+  uint8_t * extra; /* starts offset 30+n, length m */
 
 } localHeader;
 
