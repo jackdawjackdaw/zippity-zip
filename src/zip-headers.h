@@ -1,4 +1,5 @@
 #ifndef __INC_ZIPHEAD__
+#include <stdint.h>
 /**
  * zip files are laid out:
  * 
@@ -26,19 +27,20 @@
  */
 
 typedef struct localHeader{
-	unsigned int headSig; /* 0, 0x04034b50 */
-	unsigned short int minVer; /* 4 */
-	unsigned short int bitFlag; /* 6 */
-	unsigned short int compMethod; /* 8 */
-	unsigned short int lmodT; /* 10 */
-	unsigned short int lmodD; /* 12 */
-	unsigned int checkSum; /* 14, CRC-32 */
-	unsigned int compSize; /* 18 */
-	unsigned int ucompSize; /* 22 */
-	unsigned short int fnameLenN; /* 26 */
-	unsigned short int fnameLenM; /* 28 */
+	uint32_t headSig; /* 0, 0x04034b50 */
+	uint16_t minVer; /* 4 */
+	uint16_t bitFlag; /* 6 */
+	uint16_t compMethod; /* 8 */
+	uint16_t lmodT; /* 10 */
+	uint16_t lmodD; /* 12 */
+	uint32_t checkSum; /* 14, CRC-32 */
+	uint32_t compSize; /* 18 */
+	uint32_t ucompSize; /* 22 */
+	uint16_t fnameLenN; /* 26 */
+	uint16_t fnameLenM; /* 28 */
 	unsigned char* fname; /* starts offset 30, length n */
-	unsigned char* extra; /* starts offset 30+n, length m */
+	uint8_t * extra; /* starts offset 30+n, length m */
+
 } localHeader;
 
 

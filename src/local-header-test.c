@@ -1,7 +1,8 @@
 #include "stdio.h"
+
 #include "stdlib.h"
 #include "string.h"
-#include <wchar.h>
+#include <stdint.h>
 
 #include "zip-headers.h"
 
@@ -9,18 +10,18 @@
 
 int readLHeader(FILE* stream, struct localHeader *head)
 {
-	unsigned short int flags[5];
-	unsigned char *fbuffer;
-	unsigned char *exbuffer;
+	uint16_t flags[5];
+	unsigned char *fbuffer; // anticipate this actually being ascii encoded
+	uint8_t *exbuffer; // no idea what this will hold
 	
-	fread(&(head->headSig), sizeof(unsigned int), 1, stream);
+	fread(&(head->headSig), sizeof(uint32_t), 1, stream);
 	if(head->headSig != localSigBYTES){
 		fprintf(stderr, "# read bad local sig: %#x\n", head->headSig);
 		return -1;
 	}
 	fprintf(stderr, "# read local sig: %#x\n", head->headSig);
 	
-	fread(&flags, sizeof(unsigned short int), 5, stream);
+	fread(&flags, sizeof(uint16_t), 5, stream);
 	head->minVer = flags[0];
 	head->bitFlag = flags[1];
 	head->compMethod = flags[2];
@@ -42,36 +43,35 @@ int readLHeader(FILE* stream, struct localHeader *head)
 	/* 				head->lmodT, */
 	/* 				head->lmodD); */
 
-	fread(&(head->checkSum), sizeof(unsigned int), 1, stream);
-	fread(&(head->compSize), sizeof(unsigned int), 1, stream);
-	fread(&(head->ucompSize), sizeof(unsigned int), 1, stream);
+	fread(&(head->checkSum), sizeof(uint32_t), 1, stream);
+	fread(&(head->compSize), sizeof(uint32_t), 1, stream);
+	fread(&(head->ucompSize), sizeof(uint32_t), 1, stream);
 	/* hmm these come out as zero ... (only for a directory) */
 	fprintf(stderr, "# crc: %#x\tcomp: %#x\tucom: %#x\n",
 					head->checkSum,
 					head->compSize,
 					head->ucompSize);
 	
-	fread(&head->fnameLenN, sizeof(unsigned short int), 1, stream);
-	fread(&head->fnameLenM, sizeof(unsigned short int), 1, stream);
+	fread(&head->fnameLenN, sizeof(uint16_t), 1, stream);
+	fread(&head->fnameLenM, sizeof(uint16_t), 1, stream);
 	
 	fprintf(stderr, "# N: %u M: %u\n", head->fnameLenN, head->fnameLenM);
 
-	// ooh this isn't working well
-	fbuffer = malloc(sizeof(unsigned char)*head->fnameLenN); // oh man alloc space for the terminating 0 also
-	exbuffer = malloc(sizeof(unsigned char)*head->fnameLenM);
+	fbuffer = malloc(sizeof(uint8_t)*head->fnameLenN); // oh man alloc space for the terminating 0 also
+	exbuffer = malloc(sizeof(uint8_t)*head->fnameLenM);
 
 	// hmm
-	fread(fbuffer, sizeof(unsigned char)*head->fnameLenN, 1, stream);
-	fread(exbuffer, sizeof(unsigned char), head->fnameLenM, stream);
+	fread(fbuffer, sizeof(uint8_t)*head->fnameLenN, 1, stream);
+	fread(exbuffer, sizeof(uint8_t), head->fnameLenM, stream);
 	
 	fbuffer[head->fnameLenN] = '\0'; // stringify properly
 	
 	//fprintf(stderr, "# %c\n", fbuffer[0]);
 
-	head->fname = malloc(sizeof(unsigned char)*head->fnameLenN);
+	head->fname = malloc(sizeof(uint8_t)*head->fnameLenN);
 	memcpy(head->fname, fbuffer, head->fnameLenN);
 	
-	head->extra = malloc(sizeof(unsigned char)*head->fnameLenM);
+	head->extra = malloc(sizeof(uint8_t)*head->fnameLenM);
 	memcpy(head->extra, exbuffer, head->fnameLenM);
 
 	fprintf(stderr, "# %s\n", head->fname);
