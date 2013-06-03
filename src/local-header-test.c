@@ -35,17 +35,17 @@ int readLHeader(FILE* stream, struct localHeader *head)
 					head->lmodT,
 					head->lmodD);
 
-	fprintf(stderr, "# minVer: %d\tbitFlag %d\tcomp %d\tlmodT %d\t lmodD %d\n",
-					head->minVer,
-					head->bitFlag,
-					head->compMethod,
-					head->lmodT,
-					head->lmodD);
+	/* fprintf(stderr, "# minVer: %d\tbitFlag %d\tcomp %d\tlmodT %d\t lmodD %d\n", */
+	/* 				head->minVer, */
+	/* 				head->bitFlag, */
+	/* 				head->compMethod, */
+	/* 				head->lmodT, */
+	/* 				head->lmodD); */
 
 	fread(&(head->checkSum), sizeof(unsigned int), 1, stream);
 	fread(&(head->compSize), sizeof(unsigned int), 1, stream);
 	fread(&(head->ucompSize), sizeof(unsigned int), 1, stream);
-	/* hmm these come out as zero ... */
+	/* hmm these come out as zero ... (only for a directory) */
 	fprintf(stderr, "# crc: %#x\tcomp: %#x\tucom: %#x\n",
 					head->checkSum,
 					head->compSize,
@@ -75,7 +75,7 @@ int readLHeader(FILE* stream, struct localHeader *head)
 	memcpy(head->extra, exbuffer, head->fnameLenM);
 
 	fprintf(stderr, "# %s\n", head->fname);
-	fprintf(stderr, "# %s\n", head->extra);
+	//fprintf(stderr, "# %s\n", head->extra);
 	
 	
 	return 1;
@@ -85,6 +85,9 @@ int readLHeader(FILE* stream, struct localHeader *head)
  * open file given as the first argument
  * try and read the first local_header
  * this should be relatively easy
+ *
+ * now try and zoop through until we get to the central directory (near the end)
+ * and then what/
  */
 
 int main (int argc, char* argv[]){
