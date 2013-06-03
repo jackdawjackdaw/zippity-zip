@@ -37,8 +37,8 @@ typedef struct localHeader{
 	unsigned int ucompSize; /* 22 */
 	unsigned short int fnameLenN; /* 26 */
 	unsigned short int fnameLenM; /* 28 */
-	char* fname; /* starts offset 30, length n */
-	char* extra; /* starts offset 30+n, length m */
+	unsigned char* fname; /* starts offset 30, length n */
+	unsigned char* extra; /* starts offset 30+n, length m */
 } localHeader;
 
 
